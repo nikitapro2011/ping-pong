@@ -1,23 +1,16 @@
 from pygame import *
+from random import randint
 # from time import time as timer
 # from random import randint 
 # mixer.init()
 window = display.set_mode((700, 500))
 display.set_caption('Danger пин понг')
-window.fill((10,4,80))
+background = transform.scale(image.load('backside.png'), (700, 500))
+# window.fill((10,4,80))
 clock = time.Clock()
 FPS = 60
-# keys_pressed = key.get_pressed()
+keys_pressed = key.get_pressed()
 game = True
-# while game:
-#     for e in event.get():
-#         if e.type == QUIT:
-#             game = False
-#             ball.update()
-#             ball.reset()
-#     clock.tick(FPS)
-#     display.update()
-# (image.load('galaxy.jpg')), 
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, size_x, size_y):
@@ -33,17 +26,23 @@ class GameSprite(sprite.Sprite):
 
 ball = GameSprite('ball.png', 300, 300, 3, 40, 40)
 
-# class Player(GameSprite):
-#     def update(self):
-#         keys = key.get_pressed()
-#         if keys[K_a] and self.rect.x > -5:
-#             self.rect.x -= self.speed
-#         if keys[K_d] and self.rect.x < 635:
-#             self.rect.x += self.speed
-#     def fire(self):
-#         bullet = Bullet('bullet.png', self.rect.centerx, self.rect.top, 15, 20, 15)
-#         bullets.add(bullet)
-# rock = Player('rocket.png', 315, 415, 5, 80, 80)
+
+
+class Player(GameSprite):
+    def update(self):
+        keys = key.get_pressed()
+        if keys[K_a] and self.rect.y > -5:
+            self.rect.y -= self.speed
+        if keys[K_d] and self.rect.y < 300:
+            self.rect.y += self.speed
+    def update(self):
+        keys = key.get_pressed()
+        if keys[K_UP] and self.rect.y > -5:
+            self.rect.y -= self.speed
+        if keys[K_DOWN] and self.rect.y < 300:
+            self.rect.y += self.speed
+plat = Player('platform.png', 10, 250, 5, 10, 200)
+plat2 = Player('platform1.png', 670, 250, 5, 10, 200)
 
 # lost = 0
 # class Enemy(GameSprite):
@@ -152,7 +151,12 @@ while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
-            ball.update()
-            ball.reset()
+    window.blit(background,(0, 0))
+    ball.update()
+    ball.reset()
+    plat.update()
+    plat.reset()
+    plat2.update()
+    plat2.reset()
     clock.tick(FPS)
     display.update()
