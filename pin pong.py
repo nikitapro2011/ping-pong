@@ -11,6 +11,8 @@ clock = time.Clock()
 FPS = 60
 keys_pressed = key.get_pressed()
 game = True
+speed_x = 4
+speed_y = 4
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed, size_x, size_y):
@@ -24,18 +26,16 @@ class GameSprite(sprite.Sprite):
     def reset(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
 
-ball = GameSprite('ball.png', 300, 300, 3, 40, 40)
-
 
 
 class Player(GameSprite):
     def update(self):
         keys = key.get_pressed()
-        if keys[K_a] and self.rect.y > -5:
+        if keys[K_w] and self.rect.y > -5:
             self.rect.y -= self.speed
-        if keys[K_d] and self.rect.y < 300:
+        if keys[K_s] and self.rect.y < 300:
             self.rect.y += self.speed
-    def update(self):
+    def update2(self):
         keys = key.get_pressed()
         if keys[K_UP] and self.rect.y > -5:
             self.rect.y -= self.speed
@@ -43,6 +43,15 @@ class Player(GameSprite):
             self.rect.y += self.speed
 plat = Player('platform.png', 10, 250, 5, 10, 200)
 plat2 = Player('platform1.png', 670, 250, 5, 10, 200)
+
+class ball(GameSprite):
+    def update(self):
+        self.rect.x += speed_x
+        self.rect.y += speed_y
+ball = ball('ball.png', 300, 300, 3, 40, 40)
+
+
+
 
 # lost = 0
 # class Enemy(GameSprite):
@@ -147,16 +156,43 @@ plat2 = Player('platform1.png', 670, 250, 5, 10, 200)
 #         for i in range(1, 6):
 #             monster = Enemy('ufo.png', randint(50,650), -40, 2, 80, 50)
 #             monsters.add(monster)
+finish = False
+font.init()
+font2 = font.SysFont('Arial', 40)
+score = 0
+font1 = font.SysFont('Arial', 80)
+win = font1.render('YOU WIN!', True, (255, 255, 255))
+lose = font1.render('YOU LOSE!', True, (180, 0, 0))
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
-    window.blit(background,(0, 0))
-    ball.update()
-    ball.reset()
-    plat.update()
-    plat.reset()
-    plat2.update()
-    plat2.reset()
+    if finish != True:
+
+        window.blit(background,(0, 0))
+        if sprite.collide_rect(plat, ball) or sprite.collide_rect(plat2, ball):
+            speed_x *= -1
+        if ball.rect.y < 0 or ball.rect.y > 450:
+            speed_y *= -1
+        ball.update()
+        ball.reset()
+        plat.update()
+        plat.reset()
+        plat2.update2()
+        plat2.reset()
+        if ball.rect.x < 0 or ball.rect.x > 450:
+            finish = True
+            window.blit(lose, (200, 200))
+        else:
+            finish = False
     clock.tick(FPS)
     display.update()
+
+
+
+
+
+
+
+
+    
